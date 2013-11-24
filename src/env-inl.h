@@ -179,6 +179,44 @@ inline Environment::~Environment() {
 #undef V
   isolate_data()->Put();
 }
+/**
+ ENVIRONMENT_STRONG_PERSISTENT_PROPERTIES(V)
+ =============
+ Equal to
+ ==============
+ ENVIRONMENT_STRONG_PERSISTENT_PROPERTIES(PropertyName##_.Dispose())
+ async_listener_load_function_.Dispose()
+
+ # step one, expand 'ENVIRONMENT_STRONG_PERSISTENT_PROPERTIES'
+
+   V(async_listener_load_function, v8::Function)                               \
+   V(async_listener_push_function, v8::Function)                               \
+   V(async_listener_run_function, v8::Function)                                \
+   V(async_listener_strip_function, v8::Function)                              \
+   V(async_listener_unload_function, v8::Function)                             \
+   V(binding_cache_object, v8::Object)                                         \
+   V(buffer_constructor_function, v8::Function)                                \
+   V(context, v8::Context)                                                     \
+   V(module_load_list_array, v8::Array)                                        \
+   V(pipe_constructor_template, v8::FunctionTemplate)                          \
+   V(process_object, v8::Object)                                               \
+   V(script_context_constructor_template, v8::FunctionTemplate)                \
+   V(script_data_constructor_function, v8::Function)                           \
+   V(secure_context_constructor_template, v8::FunctionTemplate)                \
+   V(stats_constructor_function, v8::Function)                                 \
+   V(tcp_constructor_template, v8::FunctionTemplate)                           \
+   V(tick_callback_function, v8::Function)                                     \
+   V(tls_wrap_constructor_function, v8::Function)                              \
+   V(tty_constructor_template, v8::FunctionTemplate)                           \
+   V(udp_constructor_function, v8::Function)
+
+ # step two, replace V(a, b) with target form
+     ...
+     context_.Dispose()
+     script_data_constructor_function_.Dispose()
+     ...
+ */
+
 
 inline void Environment::Dispose() {
   delete this;
@@ -293,6 +331,45 @@ inline Environment::IsolateData* Environment::isolate_data() const {
   }
   ENVIRONMENT_STRONG_PERSISTENT_PROPERTIES(V)
 #undef V
+
+
+/**
+ # Step 1. expand ENVIRONMENT_STRONG_PERSISTENT_PROPERTIES
+    V(async_listener_load_function, v8::Function)                               \
+    V(async_listener_push_function, v8::Function)                               \
+    V(async_listener_run_function, v8::Function)                                \
+    V(async_listener_strip_function, v8::Function)                              \
+    V(async_listener_unload_function, v8::Function)                             \
+    V(binding_cache_object, v8::Object)                                         \
+    V(buffer_constructor_function, v8::Function)                                \
+    V(context, v8::Context)                                                     \
+    V(module_load_list_array, v8::Array)                                        \
+    V(pipe_constructor_template, v8::FunctionTemplate)                          \
+    V(process_object, v8::Object)                                               \
+    V(script_context_constructor_template, v8::FunctionTemplate)                \
+    V(script_data_constructor_function, v8::Function)                           \
+    V(secure_context_constructor_template, v8::FunctionTemplate)                \
+    V(stats_constructor_function, v8::Function)                                 \
+    V(tcp_constructor_template, v8::FunctionTemplate)                           \
+    V(tick_callback_function, v8::Function)                                     \
+    V(tls_wrap_constructor_function, v8::Function)                              \
+    V(tty_constructor_template, v8::FunctionTemplate)                           \
+    V(udp_constructor_function, v8::Function)                                   \
+*/
+/**
+ # Step 2. expand V Example: V(script_data_constructor_function, v8::Function)
+
+    inline V8:Local<V8::Function> Environment::script_data_constructor_function() const {
+        return StrongPersistentToLocal(script_data_constructor_function_)
+    }
+
+    inline void Environment::set_script_data_constructor_function(v8::Local<V8::Function> value){
+        script_data_constructor_function_.Reset(isolate(), value)
+    }
+
+*/
+
+
 
 #undef ENVIRONMENT_STRONG_PERSISTENT_PROPERTIES
 #undef PER_ISOLATE_STRING_PROPERTIES
