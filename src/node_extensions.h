@@ -55,3 +55,47 @@
     END                                                                       \
 
 #endif  // SRC_NODE_EXTENSIONS_H_
+
+/**
+ * 	NODE_EXT_LIST(NODE_EXT_LIST_START, NODE_EXT_LIST_ITEM, NODE_EXT_LIST_END)
+ *
+ * 	# step 1
+ * 	NODE_EXT_LIST(
+ * 		node::node_module_struct *node_module_list[] = {,
+ * 		NODE_EXT_STRING,
+ * 		NULL};
+ * 		)
+ *
+ * 	# step 2
+ * 	node::node_module_struct *node_module_list[] = {
+ * 		NODE_EXT_STRING(node_buffer)
+ * 		NODE_EXT_STRING(node_contextify)
+ * 		...
+ * 	}
+ *
+ * 	# step 3
+ * 	node::node_module_struct *node_module_list[] = {
+ * 		...
+ * 		&node_contextify_module,
+ * 		...
+ * 	}
+ *
+ * 	# step 4
+ * 	// defined in node.h line:237
+ * 	node::node_module_struct node_contextify_module = {
+ *
+ * 	}
+ *
+ * 	## step 4.1
+ * 	#define NODE_MODULE_CONTEXT_AWARE(modname, regfunc)        \
+ * 		extern 'C' {                                           \
+ * 			node::node_module_struct modname ## _module = {    \
+ * 				NODE_MODULE_VERSION,   						   \	//int version;
+ * 				NULL,										   \	//void *dso_handle;
+ * 				__FILE__,									   \	//const char *filename;
+ * 				NULL,										   \  	//node::addon_register_func register_func;
+ * 				(regfunc),				 					   \	//node::addon_context_register_func register_context_func;
+ * 				NODE_STRINGIFY(modname) 					   \  	//const char *modname
+ * 			}
+ * 		}
+ */

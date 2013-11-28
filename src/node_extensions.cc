@@ -48,7 +48,11 @@ NODE_EXT_LIST(NODE_EXT_LIST_START, NODE_EXT_LIST_ITEM, NODE_EXT_LIST_END)
 NODE_EXT_LIST(NODE_EXT_LIST_START, NODE_EXT_LIST_ITEM, NODE_EXT_LIST_END)
 
 namespace node {
-
+/**
+ *	get_builtin_module(const char *name){}
+ *
+ *	return matched source code by name in node_module_list[]
+ */
 node_module_struct* get_builtin_module(const char *name) {
   char buf[128];
   node_module_struct *cur = NULL;

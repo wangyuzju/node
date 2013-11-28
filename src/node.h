@@ -207,6 +207,11 @@ NODE_EXTERN typedef void (*addon_register_func)(
     v8::Handle<v8::Object> exports,
     v8::Handle<v8::Value> module);
 
+/**
+    define a function pointer
+    addon_context_register_func is a pointer to a function
+    the function's return value is void, and has three parameters(exports, module, context)
+ */
 NODE_EXTERN typedef void (*addon_context_register_func)(
     v8::Handle<v8::Object> exports,
     v8::Handle<v8::Value> module,

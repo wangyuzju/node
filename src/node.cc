@@ -1921,6 +1921,27 @@ static void Binding(const FunctionCallbackInfo<Value>& args) {
   uint32_t l = modules->Length();
   modules->Set(l, OneByteString(node_isolate, buf));
 
+  /**
+   * builtin_module lsit:
+   * 	-	node_buffer
+   * 	-	node_contextify
+   * 	-	node_fs
+   * 	-	node_http_parser
+   * 	-	node_os
+   * 	-	node_smalloc
+   * 	-	node_zlib
+   *
+   * 	-	node_uv
+   * 	-	node_timer_warp
+   * 	-	node_tcp_wrap
+   * 	-	node_udp_wrap
+   * 	-	node_pipe_wrap
+   * 	-	node_cares_wrap
+   * 	-	node_tty_wrap
+   * 	-	node_process_wrap
+   * 	-	node_fs_event_wrap
+   * 	-	node_signal_wrap
+   */
   node_module_struct* mod = get_builtin_module(*module_v);
   if (mod != NULL) {
     exports = Object::New();
@@ -1928,13 +1949,19 @@ static void Binding(const FunctionCallbackInfo<Value>& args) {
     assert(mod->register_func == NULL);
     assert(mod->register_context_func != NULL);
     Local<Value> unused = Undefined(env->isolate());
+    // call the function passed to `NODE_MODULE_CONTEXT_AWARE(node_contextify, node::InitContextify);` as last args
+    //  -    passed exports object as return value
     mod->register_context_func(exports, unused, env->context());
     cache->Set(module, exports);
   } else if (!strcmp(*module_v, "constants")) {
-    exports = Object::New();
+    /* NativeModule.binding('constants') */
+	exports = Object::New();
     DefineConstants(exports);
     cache->Set(module, exports);
   } else if (!strcmp(*module_v, "natives")) {
+	/* strcmp when equal returns 0
+	 * NativeModule.binding('natives')
+	 * */
     exports = Object::New();
     DefineJavaScript(exports);
     cache->Set(module, exports);
