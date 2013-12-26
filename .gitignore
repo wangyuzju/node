@@ -1,5 +1,12 @@
 .idea/*
 *.iml
+.settings/*
+extension/.idea/*
+extension/.iml
+extension/.settings/*
+extension/.project
+extension/.cproject
+extension/build/*
 
 core
 vgcore.*
