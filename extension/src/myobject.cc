@@ -22,5 +22,19 @@ MyObject::~MyObject() {
 }
 
 void MyObject::Init(Handle<Object> target){
-	target->Set(String::NewSymbol("foo"), String::New("bar"));
+
+
+	// Prepare constructor template
+	Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
+	tpl->SetClassName(String::New("MyObejct"));
+	tpl->InstanceTemplate()->SetInternalFieldCount(1);
+
+	// Prototype
+	tpl->PrototypeTemplate()->Set(String::New("add"), FunctionTemplate::New(Plus)->GetFunction());
+	constructor = Persistent<Function>::New(tpl->GetFunction());
+	target->Set(String::NewSymbol("MyObject"), constructor);
+}
+
+void MyObject::New(const FunctionCallback<Value>& args){
+	HandleScope
 }

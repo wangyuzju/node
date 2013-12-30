@@ -19,6 +19,6 @@ console.log hello.newPeople('MCY')
 console.log hello.getFn()()
 
 ###
-hello = require '../build/Release/hello.node'
+hello = require '../build/Release/addon.node'
 
-console.log(hello.print())
+console.log(hello)

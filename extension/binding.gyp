@@ -1,12 +1,10 @@
 {
 	'targets': [
 		{
-			'target_name': 'hello',
+			'target_name': 'addon',
 			'sources': [
 				'src/main.cc',
-			],
-			'outouts': [
-				'../hello.node'
+				'src/myobject.cc'
 			],
 			'conditions': [
 				['OS=="win"', 
