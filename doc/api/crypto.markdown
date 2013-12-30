@@ -100,8 +100,9 @@ Returned by `crypto.createHash`.
 
 Updates the hash content with the given `data`, the encoding of which
 is given in `input_encoding` and can be `'utf8'`, `'ascii'` or
-`'binary'`.  If no encoding is provided, then a buffer is expected.
-If `data` is a `Buffer` then `input_encoding` is ignored.
+`'binary'`.  If no encoding is provided and the input is a string an
+encoding of `'binary'` is enforced. If `data` is a `Buffer` then
+`input_encoding` is ignored.
 
 This can be called many times with new data as it is streamed.
 
@@ -218,6 +219,13 @@ multiple of the cipher's block size or `final` will fail.  Useful for
 non-standard padding, e.g. using `0x0` instead of PKCS padding. You
 must call this before `cipher.final`.
 
+### cipher.getAuthTag()
+
+For authenticated encryption modes (currently supported: GCM), this
+method returns a `Buffer` that represents the _authentication tag_ that
+has been computed from the given data. Should be called after
+encryption has been completed using the `final` method!
+
 
 ## crypto.createDecipher(algorithm, password)
 
@@ -267,6 +275,15 @@ standard block padding to prevent `decipher.final` from checking and
 removing it. Can only work if the input data's length is a multiple of
 the ciphers block size. You must call this before streaming data to
 `decipher.update`.
+
+### decipher.setAuthTag(buffer)
+
+For authenticated encryption modes (currently supported: GCM), this
+method must be used to pass in the received _authentication tag_.
+If no tag is provided or if the ciphertext has been tampered with,
+`final` will throw, thus indicating that the ciphertext should
+be discarded due to failed authentication.
+
 
 ## crypto.createSign(algorithm)
 
