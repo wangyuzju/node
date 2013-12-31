@@ -21,4 +21,6 @@ console.log hello.getFn()()
 ###
 hello = require '../build/Release/addon.node'
 
-console.log(hello)
+console.log((new hello.MyObject(100)))
+
+console.log(hello.MyObject(10))

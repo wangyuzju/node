@@ -4,6 +4,8 @@
 #include <node.h>
 #include <node_object_wrap.h>
 
+using namespace v8;
+
 class MyObject: public node::ObjectWrap {
 public:
 	static void Init(v8::Handle<v8::Object> target);
@@ -13,8 +15,8 @@ private:
 	~MyObject();
 
 	static void New(const v8::FunctionCallbackInfo<v8::Value>& info);
-	static void Plus(const v8::FunctionCallbackInfo<v8::Value>& info);
-	static v8::Persistent<v8::Function> constructor;
+	static void Add(const v8::FunctionCallbackInfo<v8::Value>& info);
+//	static v8::Persistent<v8::Function> constructor;
 	double value_;
 };
 
