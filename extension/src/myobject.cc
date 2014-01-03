@@ -7,6 +7,7 @@
 
 #include <node.h>
 #include "myobject.h"
+#include "notification.h"
 
 //using namespace v8;
 
@@ -27,15 +28,23 @@ void MyObject::Init(Handle<Object> target){
 
 	// Prepare constructor template
 	Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
-	tpl->SetClassName(String::New("MyObejct"));
+	tpl->SetClassName(String::New("Counter"));
 	tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
 	// Prototype
 	tpl->PrototypeTemplate()->Set(String::New("add"), FunctionTemplate::New(Add)->GetFunction());
+
 	Local<Function> fn = tpl->GetFunction();
 	constructor.Reset(isolate, fn);
 	target->Set(String::NewSymbol("MyObject"), fn);
 
+	Local<FunctionTemplate> nTpl = FunctionTemplate::New(Notification::New);
+	nTpl->SetClassName(String::NewSymbol("Desktop Notification"));
+	// for wrap notification instance in memory;
+	nTpl->InstanceTemplate()->SetInternalFieldCount(1);
+
+	target->Set(String::NewSymbol("notify"), nTpl->GetFunction());
+	target->Set(String::NewSymbol("updateNotify"), FunctionTemplate::New(Notification::Update)->GetFunction());
 }
 
 void MyObject::New(const v8::FunctionCallbackInfo<Value>& args){
@@ -56,8 +65,16 @@ void MyObject::New(const v8::FunctionCallbackInfo<Value>& args){
 		Local<Value> argv[argc] = {
 				args[0]
 		};
-		Local<Function> cons = Local<Function>::New(isolate, constructor);
-		args.GetReturnValue().Set(cons->NewInstance(argc, argv));
+		Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
+		tpl->SetClassName(String::New("Counter"));
+		tpl->InstanceTemplate()->SetInternalFieldCount(1);
+
+		// Prototype
+		tpl->PrototypeTemplate()->Set(String::New("add"), FunctionTemplate::New(Add)->GetFunction());
+
+		Local<Function> fn = tpl->GetFunction();
+//		Local<Function> cons = Local<Function>::New(isolate, constructor);
+		args.GetReturnValue().Set(fn->NewInstance(argc, argv));
 	}
 }
 
@@ -69,6 +86,17 @@ void MyObject::Add(const v8::FunctionCallbackInfo<Value>& args){
 	obj->value_ += 1;
 	args.GetReturnValue().Set(Number::New(obj->value_));
 }
+
+
+//void MyObject::DesktopNotify(const v8::FunctionCallbackInfo<Value>& info){
+//	// notify_init (const char *app_name)
+//	notify_init ("Hello world!");
+//	NotifyNotification * Hello = notify_notification_new ("Hello world", "This is an example notification.", "dialog-information");
+//	notify_notification_show (Hello, NULL);
+//	// Gnome Object decrease reference!
+//	g_object_unref(G_OBJECT(Hello));
+//	notify_uninit();
+//}
 
 void Plus(const v8::FunctionCallbackInfo<Value>& info){
 //	printf("hello C++!");

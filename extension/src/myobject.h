@@ -14,8 +14,12 @@ private:
 	explicit MyObject(double value=0);
 	~MyObject();
 
+
+
+
 	static void New(const v8::FunctionCallbackInfo<v8::Value>& info);
 	static void Add(const v8::FunctionCallbackInfo<v8::Value>& info);
+	static void DesktopNotify(const v8::FunctionCallbackInfo<v8::Value>& info);
 	static v8::Persistent<v8::Function> constructor;
 	double value_;
 };
